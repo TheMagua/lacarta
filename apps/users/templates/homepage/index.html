@@ -1,24 +1,89 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% extends 'homepage/base.html' %}
+{% load static %}
+{% block content %}
 
-    <title>Hello Django on Render!</title>
-
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-          crossorigin="anonymous">
-</head>
-<body>
-<main class="container">
-    <div class="row text-center justify-content-center">
-        <div class="col">
-            <h1 class="display-4">Hello World!</h1>
+{% if locals %}
+            
+  <div class="presentation-section">
+      <div class="carrousel-container">
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="true">
+          <div class="carousel-inner ">
+            {% for offer in offers %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <div class="carrousel-info">
+                    <div class="carrousel-info-text">
+                      <h1 class="name">{{offer.offer_name}}</h1>
+                      <span>{{offer.offer_description}}</span>
+                    </div>
+                    
+                    <div class="btn-container">
+                      <a href="{% url 'local' offer.local.id %}" class="btn">Ver local</a>
+                    </div>
+                  </div>
+                  <div class="carrousel-image">
+                    <div class='shadow'></div>
+                    <img id='pre-1' src="{{offer.image_first.url}}" class="" alt="{{offer.image_first.url}}">
+                    <img id='pre-2' src="{{offer.image_two.url}}" class="" alt="{{offer.image_two.url}}">
+                    <img id='pre-3' src="{{offer.image_three.url}}" class="" alt="{{offer.image_three.url}}">
+                  </div>
+                  
+              </div>
+            {% endfor %}
+          <button class="carousel-control-prev" type="button" data-target="#carouselExampleAutoplaying" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-target="#carouselExampleAutoplaying" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden"></span>
+          </button>
         </div>
+      </div> 
+      </div>
+      
+      
+    
+
+      
+      </div>
+      
+            
+{% endif %}
+    
+<div class="local-section"> 
+    <div class="line-menu">
+        <div class="line"></div>
+        <h1>Locales</h1>
     </div>
-</main>
-</body>
-</html>
+
+    <div class="local-container">
+        {% if locals %}
+            {% for local in locals %}
+              <div class="local">
+                  <h5 class=" name ">{{local.local_name}}</h5>
+                  <div id='{{local.id}}' class="local-item">
+                      <img src="{{ local.image.url }}" class="img-fluid" alt="Descripción de la imagen">
+                      <div class="local-item-wrap">
+                          <div class="local-content">
+                              
+                              <p class=" row text-white fw-bold mt-lg-2">Direccion: {{local.address}}</p>
+                              
+                              <a href="{% url 'local' local.id %}" class="btn btn-local">Visitar</a>
+                          </div>
+                      </div> 
+                  </div> 
+                </div>
+            {% endfor %}
+            
+        {% endif %}
+            
+        
+    </div>
+    
+    
+            
+            
+            
+</div>
+    
+{% endblock %}
