@@ -1,30 +1,212 @@
-{% load static %}
-<!doctype html>
-<html lang="en">
+
+<!DOCTYPE html>
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}La Carta{% endblock %} </title>
 
-    <title>Hello Django on Render!</title>
 
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-          crossorigin="anonymous">
+    <!-- FAVICON -->
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href=" {% static 'css/style.css' %}">
+    <!-- <link rel="stylesheet" href=" {% static 'css/responsive-style.css' %}"> -->
+    <!-- Bootstrap 5 CDN Links -->
+   
+
+    <!-- Link Swiper's CSS -->   
 </head>
-<body>
-    <header class="container mt-4 mb-4">
-        <a href="https://render.com">
-            <img src="{% static 'homepage/pizzeria1.jpg' %}" alt="Homepage banner" class="mw-100">
-        </a>
-    </header>
-<main class="container">
-    <div class="row text-center justify-content-center">
-        <div class="col">
-            <h1 class="display-4">Hello World!</h1>
+{% block body %}
+    <body>
+        <section class="contenido">
+          <div class="logo-container">
+            <img src="{% static 'fonts/logo.png' %}" class="logo" alt="logo">
+          </div> 
+          {% if locals %}
+            
+  <div class="presentation-section">
+      <div class="carrousel-container">
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="true">
+          <div class="carousel-inner ">
+            {% for offer in offers %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <div class="carrousel-info">
+                    <div class="carrousel-info-text">
+                      <h1 class="name">{{offer.offer_name}}</h1>
+                      <span>{{offer.offer_description}}</span>
+                    </div>
+                    
+                    <div class="btn-container">
+                      <a href="{% url 'local' offer.local.id %}" class="btn">Ver local</a>
+                    </div>
+                  </div>
+                  <div class="carrousel-image">
+                    <div class='shadow'></div>
+                    <img id='pre-1' src="{{offer.image_first.url}}" class="" alt="{{offer.image_first.url}}">
+                    <img id='pre-2' src="{{offer.image_two.url}}" class="" alt="{{offer.image_two.url}}">
+                    <img id='pre-3' src="{{offer.image_three.url}}" class="" alt="{{offer.image_three.url}}">
+                  </div>
+                  
+              </div>
+            {% endfor %}
+          <button class="carousel-control-prev" type="button" data-target="#carouselExampleAutoplaying" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-target="#carouselExampleAutoplaying" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden"></span>
+          </button>
         </div>
+      </div> 
+      </div>
+      
+      
+    
+
+      
+      </div>
+      
+            
+{% endif %}
+    
+<div class="local-section"> 
+    <div class="line-menu">
+        <div class="line"></div>
+        <h1>Locales</h1>
     </div>
-</main>
-</body>
+
+    <div class="local-container">
+        {% if locals %}
+            {% for local in locals %}
+              <div class="local">
+                  <h5 class=" name ">{{local.local_name}}</h5>
+                  <div id='{{local.id}}' class="local-item">
+                      <img src="{{ local.image.url }}" class="img-fluid" alt="Descripción de la imagen">
+                      <div class="local-item-wrap">
+                          <div class="local-content">
+                              {% comment %} <h3 class=" name row text-white mb-lg-5 text-decoration-underline">{{local.local_name}}</h3> {% endcomment %}
+                              <p class=" row text-white fw-bold mt-lg-2">Direccion: {{local.address}}</p>
+                              
+                              <a href="{% url 'local' local.id %}" class="btn btn-local">Visitar</a>
+                          </div>
+                      </div> 
+                  </div> 
+                </div>
+            {% endfor %}
+            
+        {% endif %}
+            
+        
+    </div>
+    
+    
+            
+            
+            
+</div>
+        </section>
+        <div  class="nav-Bar">
+          {% if promo %}
+              <div id="promo" class="winer-form-container">
+                <div class="promo-description">
+                  <h3 class='name'>{{promo.promo_name}}</h3>
+                  <span>{{promo.promo_description}}</span>
+                </div>
+                  
+                  <form method="post">
+                      {% csrf_token %}
+                      {% comment %} {{ form.as_p }} {% endcomment %}
+                      
+                      <div class="input-container">{{form.winer_name}}</div>
+                
+              
+                      <div class="input-container">{{form.winer_ci}}</div>
+              
+                  
+                  
+                      <div class="input-container">{{form.winer_movil}}</div>
+                      <div class="input-container desactive">{{form.promo}}</div>
+                      
+                      <div class="form-btn">
+                        <button type="submit" class="btn">Enviar</button>
+                        <button type="button" id='cancel-promo' class="btn">Cancelar</button>
+                      </div>
+                      
+                  </form>
+                  
+                  
+              </div>
+              {% if form.errors %}
+                <div id='promo-alert' class="alert">
+                    <span>Ya existe un usuario con esos datos</span>
+                </div>
+              {% endif %}
+                    
+            {% endif %}
+                    
+            
+            <div class="options">
+              <a type="button" href="/" class="img-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#e98a0ff1" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
+                </svg>
+              </a>
+              {% if promo %}  
+              <a type="button" id='active-promo'  class="img-container">
+                <svg id='active-promo-image' xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#e98a0ff1" class="bi bi-info-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>
+              </a>
+              {% endif %}
+              <a type="button" id="sun-icon" class="img-container">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#e98a0ff1" class="bi bi-sun-fill" viewBox="0 0 16 16">
+                  <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
+                </svg>  
+              </a>
+              <a type="button" id="moon-icon" class="img-container">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#e98a0ff1" class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
+                  <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+                  <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+                </svg>
+              </a>
+              <form action="" method="get">
+                <div class="searh-input">
+                  
+                  {% if q %}
+                    <input type="text" placeholder='{{q}}' name='q'/>
+                  {% else %}
+                    <input type="text" placeholder='Buscar' name='q'/>
+                  {% endif %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#e98a0ff1" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                  </svg>
+                </div>
+              </form> 
+              
+              
+            </div>
+
+      <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+      <script src="{% static 'js/promo.js' %}"></script>
+      <script src="{% static 'js/activate_promo.js' %}"></script>
+      <!-- Bootstrap JavaScript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+      
+      <script src="{% static 'js/scroll_trans.js' %}"></script>
+      <script src="{% static 'js/mode_change.js' %}"></script>
+
+      
+    </body>
+    
+
+{% endblock %}
+
+
+
 </html>
+

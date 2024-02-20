@@ -1,43 +1,46 @@
 from django.contrib import admin
-from .models import User
+from .models import *
 # Register your models here.
+admin.site.register(Offer)
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    # exclude = ('groups','is_superuser','user_permissions','is_staff',)
-    list_display = ['username', 'email', 'movil', 'ci' ,'name', 'last_name',]
-    search_fields = ['username', 'email','ci']
+
+
+@admin.register(Promo)
+class PromoAdmin(admin.ModelAdmin):
+    list_display = ['promo_name', 'min_date','max_date', 'local']
+    list_per_page = 10
+    search_fields = ['promo_name']
     
-    def get_form(self, request, obj=None, **kwargs):
-        # Obtén el formulario original
-        form = super().get_form(request, obj, **kwargs)
-
-        # Si el usuario es superadministrador, no excluir campos
-        if request.user.is_superuser == True:
-            return form
-        else:
-            form.base_fields.update(form.declared_fields)
-            form.base_fields.pop('is_superuser', None)
-            form.base_fields.pop('is_staff', None)
-            form.base_fields.pop('groups', None)
-            form.base_fields.pop('user_permissions', None)
-        return form
-
-        
     
     def get_queryset(self, request):
         # Obtén el queryset original
         qs = super().get_queryset(request)
-        
         if request.user.is_superuser:
             return qs
-        else:
-            return qs.filter(id=request.user.id)
+        else: 
+            return qs.filter(local__user=request.user)
         
-    def has_add_permission(self, request):
-        # Obtiene todos los Locales asociados con el usuario actual
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "local":
+            kwargs["queryset"] = Local.objects.filter(user=request.user)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+@admin.register(Winer)
+class WinerAdmin(admin.ModelAdmin):
+    list_display = ['winer_name', 'winer_ci','winer_movil', 'promo']
+    list_per_page = 10
+    search_fields = ['winer_name','winer_ci','winer_movil']
+    
+    
+    def get_queryset(self, request):
+        # Obtén el queryset original
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        else: 
+            return qs.filter(promo__local__user=request.user)
         
-        # Si el usuario ya tiene un Local, no permitimos agregar otro
-        if request.user.is_superuser==False:
-            return False
-        return super().has_add_permission(request)
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "promo":
+            kwargs["queryset"] = Promo.objects.filter(local__user=request.user)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
