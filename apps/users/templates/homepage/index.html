@@ -39,7 +39,7 @@
                     </div>
                     
                     <div class="btn-container">
-                      <a href="{% url 'local' offer.local.id %}" class="btn">Ver local</a>
+                      {% comment %} <a href="{% url 'local' offer.local.id %}" class="btn">Ver local</a> {% endcomment %}
                     </div>
                   </div>
                   <div class="carrousel-image">
@@ -90,7 +90,7 @@
                               {% comment %} <h3 class=" name row text-white mb-lg-5 text-decoration-underline">{{local.local_name}}</h3> {% endcomment %}
                               <p class=" row text-white fw-bold mt-lg-2">Direccion: {{local.address}}</p>
                               
-                              <a href="{% url 'local' local.id %}" class="btn btn-local">Visitar</a>
+                              {% comment %} <a href="{% url 'local' local.id %}" class="btn btn-local">Visitar</a> {% endcomment %}
                           </div>
                       </div> 
                   </div> 
