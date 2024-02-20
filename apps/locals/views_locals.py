@@ -11,7 +11,7 @@ def product_detail(request,pk):
     product = Product.objects.filter(pk = pk).filter(active = True).first()
     aggregates = Aggregate.objects.filter(product = product.id)
     ingredients = Ingredient.objects.filter(product = product.id)
-    return render(request,'product.html',context = {"product":product,"aggregates":aggregates,"ingredients":ingredients,})
+    return render(request,'homepage/product.html',context = {"product":product,"aggregates":aggregates,"ingredients":ingredients,})
 
 
 
@@ -55,4 +55,4 @@ def local_detail(request,pk):
         form = WinerForm(initial={'promo': promo})
     
     
-    return render(request,'local.html',context = {"local":local,'galleries':galleries,'categories':categories,'cart':cart,'q':query,'form': form,'promo':promo})
+    return render(request,'homepage/local.html',context = {"local":local,'galleries':galleries,'categories':categories,'cart':cart,'q':query,'form': form,'promo':promo})
